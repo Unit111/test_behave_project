@@ -1,9 +1,18 @@
 pipeline {
     agent any
     stages {
-        stage('Stage 1') {
+        stage('Install requirements') {
             steps {
-                sh './venv/bin/behave run_in_parallel'
+                sh  """
+                    pip3 install -r requirements.txt
+                    """
+            }
+        }
+        stage('Run tests') {
+            steps {
+                sh  """
+                    python3 ./run_in_parallel.py
+                    """
             }
         }
     }
