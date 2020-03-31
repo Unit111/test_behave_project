@@ -11,8 +11,21 @@ pipeline {
         stage('Run tests') {
             steps {
                 sh  """
-                    python3 ./run_in_parallel.py
+                    behave -f allure_behave.formatter:AllureFormatter -o reports tests/features/first.feature:1
                     """
+            }
+        }
+        stage('reports') {
+            steps {
+                script {
+                        allure([
+                                includeProperties: false,
+                                jdk: '',
+                                properties: [],
+                                reportBuildPolicy: 'ALWAYS',
+                                results: [[path: 'reports']]
+                        ])
+                }
             }
         }
     }
