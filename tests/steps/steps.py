@@ -6,7 +6,7 @@ from behave import step
 @step('the user logs in')
 def step_impl(context):
     print("Given the user logs in")
-    time.sleep(5)
+    time.sleep(30)
 
 
 @step('the user does something')
