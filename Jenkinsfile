@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Stage 1') {
             steps {
-                echo 'Hello world!'
+                sh './venv/bin/behave run_in_parallel'
             }
         }
     }
