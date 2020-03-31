@@ -15,7 +15,7 @@ def parse_arguments():
 
 def _run_parallel_feature(feature):
     """Runs the features passed to it"""
-    cmd = 'behave {feature}'.format(feature=feature)
+    cmd = 'behave -f allure_behave.formatter:AllureFormatter -o reports {feature}'.format(feature=feature)
     r = call(cmd, shell=True)
 
     status = 'Passed' if r == 0 else 'Failed'
@@ -32,8 +32,13 @@ def main():
     p = Popen(cmd, stdout=PIPE, shell=True)
     out, err = p.communicate()
 
-    print(err)
+    if err is not None:
+        print(err)
+
     features = [scenario['location'] for scenario in json.loads(out.decode())]
+    with open("features","w") as file:
+        for feature in features:
+            file.write("%s\n" % feature)
 
     pool.map(_run_parallel_feature, features)
 
