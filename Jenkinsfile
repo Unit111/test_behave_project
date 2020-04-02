@@ -16,33 +16,35 @@ pipeline {
         stage('Print features') {
             steps {
                 script {
-                    def featuresString = readFile(file: 'features')
-                    def featuresArray = featuresString.split("\n")
-                    for( String value : featuresArray )
-                        println(value);
+                    def featuresArray = readFile(file: 'features').split("\n")
+                    for(def String value : featuresArray )
+//                        println("Value " + value);
+                        stage("Value " + value) {
+                        sh "behave -f allure_behave.formatter:AllureFormatter -o reports " + value
+                    }
                 }
             }
         }
-        stage('Run tests') {
-            failFast true
-            parallel {
-                stage('Branch A') {
-                    steps {
-                        sh "behave -f allure_behave.formatter:AllureFormatter -o reports tests/features/first.feature:1"
-                    }
-                }
-                stage('Branch B') {
-                    steps {
-                        sh "behave -f allure_behave.formatter:AllureFormatter -o reports tests/features/fourth.feature:1"
-                    }
-                }
-                stage('Branch C') {
-                    steps {
-                        sh "behave -f allure_behave.formatter:AllureFormatter -o reports tests/features/second.feature:1"
-                    }
-                }
-                }
-        }
+//        stage('Run tests') {
+//            failFast true
+//            parallel {
+//                stage('Branch A') {
+//                    steps {
+//                        sh "behave -f allure_behave.formatter:AllureFormatter -o reports tests/features/first.feature:1"
+//                    }
+//                }
+//                stage('Branch B') {
+//                    steps {
+//                        sh "behave -f allure_behave.formatter:AllureFormatter -o reports tests/features/fourth.feature:1"
+//                    }
+//                }
+//                stage('Branch C') {
+//                    steps {
+//                        sh "behave -f allure_behave.formatter:AllureFormatter -o reports tests/features/second.feature:1"
+//                    }
+//                }
+//            }
+//        }
         stage('Reports') {
             steps {
                 script {
