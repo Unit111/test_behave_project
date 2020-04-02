@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent {label "masterNode"}
     stages {
         stage('Install requirements') {
             steps {
@@ -16,35 +16,21 @@ pipeline {
         stage('Print features') {
             steps {
                 script {
+                    def tests = [:]
                     def featuresArray = readFile(file: 'features').split("\n")
-                    for(def String value : featuresArray )
-//                        println("Value " + value);
-                        stage("Value " + value) {
-                        sh "behave -f allure_behave.formatter:AllureFormatter -o reports " + value
+                    Arrays.asList(featuresArray).each { feature ->
+                        featureName = feature.replace(":1", "").split("/")
+                        featureName = featureName[featureName.length - 1]
+                        tests[featureName] = {
+                            stage(featureName) {
+                                    sh "behave -f allure_behave.formatter:AllureFormatter -o reports " + feature
+                            }
+                        }
                     }
+                    parallel tests
                 }
             }
         }
-//        stage('Run tests') {
-//            failFast true
-//            parallel {
-//                stage('Branch A') {
-//                    steps {
-//                        sh "behave -f allure_behave.formatter:AllureFormatter -o reports tests/features/first.feature:1"
-//                    }
-//                }
-//                stage('Branch B') {
-//                    steps {
-//                        sh "behave -f allure_behave.formatter:AllureFormatter -o reports tests/features/fourth.feature:1"
-//                    }
-//                }
-//                stage('Branch C') {
-//                    steps {
-//                        sh "behave -f allure_behave.formatter:AllureFormatter -o reports tests/features/second.feature:1"
-//                    }
-//                }
-//            }
-//        }
         stage('Reports') {
             steps {
                 script {
