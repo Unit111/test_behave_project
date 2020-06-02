@@ -15,7 +15,7 @@ def parse_arguments():
 
 def _run_parallel_feature(feature):
     """Runs the features passed to it"""
-    cmd = 'behave -f allure_behave.formatter:AllureFormatter -o reports {feature}'.format(feature=feature)
+    cmd = 'behave -f allure -o reports {feature}'.format(feature=feature)
     r = call(cmd, shell=True)
 
     status = 'Passed' if r == 0 else 'Failed'
