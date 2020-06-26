@@ -1,6 +1,7 @@
 import time
 
 from behave import step
+from hamcrest import assert_that, equal_to
 
 
 @step('the user logs in')
